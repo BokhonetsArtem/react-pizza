@@ -5,7 +5,7 @@ import Skeleton from "../components/PizzaBlock/Skeleton";
 
 export default function Home({ pizzas, isLoading }) {
   return (
-    <>
+    <div className="container">
       <div className="content__top">
         <Categories />
         <Sort />
@@ -20,6 +20,6 @@ export default function Home({ pizzas, isLoading }) {
               );
             })}
       </div>
-    </>
+    </div>
   );
 }
