@@ -5,6 +5,11 @@
   &__label {
     display: flex;
     align-items: center;
+    transition: transform 0.3s ease;
+
+    &--icon-reverse {
+      transform: rotate(180deg);
+    }
 
     svg {
       margin-right: 8px;

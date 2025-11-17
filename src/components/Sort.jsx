@@ -1,13 +1,21 @@
 import { useState } from "react";
 
-export default function Sort() {
+export default function Sort({
+  sortObj,
+  setSortObj,
+  reverseSorting,
+  setReverseSorting,
+}) {
   const [open, setOpen] = useState(false);
-  const [isActiveFilterIndex, setIsActiveFilterIndex] = useState(0);
 
-  const filters = ["популярности", "цене", "алфавиту"];
+  const filters = [
+    { name: "популярности", sortProperty: "rating" },
+    { name: "цене", sortProperty: "price" },
+    { name: "алфавиту", sortProperty: "title" },
+  ];
 
-  const onClickActiveFilter = (index) => {
-    setIsActiveFilterIndex(index);
+  const onClickActiveFilter = (obj) => {
+    setSortObj(obj);
     setOpen(false);
   };
 
@@ -15,6 +23,8 @@ export default function Sort() {
     <div className="sort">
       <div className="sort__label">
         <svg
+          className={reverseSorting ? "" : "sort__label--icon-reverse"}
+          onClick={() => setReverseSorting(!reverseSorting)}
           width="10"
           height="6"
           viewBox="0 0 10 6"
@@ -27,21 +37,19 @@ export default function Sort() {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setOpen(!open)}>
-          {filters[isActiveFilterIndex]}
-        </span>
+        <span onClick={() => setOpen(!open)}>{sortObj.name}</span>
       </div>
       <div className="sort__popup">
         {open && (
           <ul>
-            {filters.map((filter, index) => {
+            {filters.map((obj) => {
               return (
                 <li
-                  onClick={() => onClickActiveFilter(index)}
-                  className={isActiveFilterIndex === index ? "active" : ""}
-                  key={filter}
+                  onClick={() => onClickActiveFilter(obj)}
+                  className={sortObj.name === obj.name ? "active" : ""}
+                  key={obj.name}
                 >
-                  {filter}
+                  {obj.name}
                 </li>
               );
             })}
