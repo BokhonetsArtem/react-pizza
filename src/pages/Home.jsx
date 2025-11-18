@@ -2,11 +2,12 @@ import Categories from "../components/Categories";
 import Sort from "../components/Sort";
 import PizzaBlock from "../components/PizzaBlock";
 import Skeleton from "../components/PizzaBlock/Skeleton";
+import Pagination from "../components/Pagination";
 
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-export default function Home() {
+export default function Home({ searchValue }) {
   const [pizzas, setPizzas] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [categoryIndex, setCategoryIndex] = useState(0);
@@ -15,16 +16,21 @@ export default function Home() {
     sortProperty: "rating",
   });
   const [reverseSorting, setReverseSorting] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { pathname } = useLocation();
+
+  const search = searchValue ? `&search=${searchValue}` : "";
 
   useEffect(() => {
     setIsLoading(true);
 
     fetch(
-      `https://69185af821a96359486fc82f.mockapi.io/pizzas?${
+      `https://69185af821a96359486fc82f.mockapi.io/pizzas?page=${currentPage}&limit=4${
         categoryIndex > 0 ? `category=${categoryIndex}` : ""
-      }&sortBy=${sortObj.sortProperty}&order=${reverseSorting ? "asc" : "desc"}`
+      }&sortBy=${sortObj.sortProperty}&order=${
+        reverseSorting ? "asc" : "desc"
+      }${search}`
     )
       .then((res) => res.json())
       .then((json) => {
@@ -34,11 +40,23 @@ export default function Home() {
       .catch((err) => {
         console.log(err);
       });
-  }, [categoryIndex, sortObj, reverseSorting]);
+  }, [categoryIndex, sortObj, reverseSorting, searchValue, currentPage]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+
+  const cards = pizzas
+    .filter((pizza) =>
+      pizza.name.toLowerCase().includes(searchValue.toLowerCase())
+    )
+    .map((pizza) => {
+      return <PizzaBlock key={pizza.id} title={pizza.name} {...pizza} />;
+    });
+
+  const skeletons = [...new Array(8)].map((_, index) => (
+    <Skeleton key={index} />
+  ));
 
   return (
     <div className="container">
@@ -55,15 +73,8 @@ export default function Home() {
         />
       </div>
       <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">
-        {isLoading
-          ? [...new Array(8)].map((_, index) => <Skeleton key={index} />)
-          : pizzas.map((pizza) => {
-              return (
-                <PizzaBlock key={pizza.id} title={pizza.name} {...pizza} />
-              );
-            })}
-      </div>
+      <div className="content__items">{isLoading ? skeletons : cards}</div>
+      <Pagination onChangePage={(number) => setCurrentPage(number)} />
     </div>
   );
 }
