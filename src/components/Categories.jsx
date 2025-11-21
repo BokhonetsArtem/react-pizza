@@ -1,13 +1,13 @@
-export default function Categories({ categoryIndex, setCategoryIndex }) {
-  const categories = [
-    "Все",
-    "Мясные",
-    "Вегетарианская",
-    "Гриль",
-    "Острые",
-    "Закрытые",
-  ];
+const categories = [
+  "Все",
+  "Мясные",
+  "Вегетарианская",
+  "Гриль",
+  "Острые",
+  "Закрытые",
+];
 
+export default function Categories({ categoryId, onChangeCategory }) {
   return (
     <div className="categories">
       <ul>
@@ -15,8 +15,8 @@ export default function Categories({ categoryIndex, setCategoryIndex }) {
           return (
             <li
               key={category}
-              onClick={() => setCategoryIndex(index)}
-              className={categoryIndex === index ? "active" : ""}
+              onClick={() => onChangeCategory(index)}
+              className={categoryId === index ? "active" : ""}
             >
               {category}
             </li>

@@ -6,16 +6,19 @@ import Pagination from "../components/Pagination";
 
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+
+import { setCategoryId } from "../redux/slices/filterSlice";
 
 export default function Home({ searchValue }) {
+  const { categoryId, sort, reverseSorting } = useSelector(
+    (state) => state.filter
+  );
+  const dispatch = useDispatch();
+
   const [pizzas, setPizzas] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [categoryIndex, setCategoryIndex] = useState(0);
-  const [sortObj, setSortObj] = useState({
-    name: "популярности",
-    sortProperty: "rating",
-  });
-  const [reverseSorting, setReverseSorting] = useState(false);
+
   const [currentPage, setCurrentPage] = useState(1);
 
   const { pathname } = useLocation();
@@ -26,9 +29,9 @@ export default function Home({ searchValue }) {
     setIsLoading(true);
 
     fetch(
-      `https://69185af821a96359486fc82f.mockapi.io/pizzas?page=${currentPage}&limit=4${
-        categoryIndex > 0 ? `category=${categoryIndex}` : ""
-      }&sortBy=${sortObj.sortProperty}&order=${
+      `https://69185af821a96359486fc82f.mockapi.io/pizzas?page=${currentPage}&limit=4&${
+        categoryId > 0 ? `category=${categoryId}` : ""
+      }&sortBy=${sort.sortProperty}&order=${
         reverseSorting ? "asc" : "desc"
       }${search}`
     )
@@ -40,7 +43,7 @@ export default function Home({ searchValue }) {
       .catch((err) => {
         console.log(err);
       });
-  }, [categoryIndex, sortObj, reverseSorting, searchValue, currentPage]);
+  }, [categoryId, sort, reverseSorting, searchValue, currentPage]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -62,15 +65,10 @@ export default function Home({ searchValue }) {
     <div className="container">
       <div className="content__top">
         <Categories
-          categoryIndex={categoryIndex}
-          setCategoryIndex={setCategoryIndex}
+          categoryId={categoryId}
+          onChangeCategory={(id) => dispatch(setCategoryId(id))}
         />
-        <Sort
-          sortObj={sortObj}
-          setSortObj={setSortObj}
-          reverseSorting={reverseSorting}
-          setReverseSorting={setReverseSorting}
-        />
+        <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">{isLoading ? skeletons : cards}</div>

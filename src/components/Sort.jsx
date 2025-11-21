@@ -1,21 +1,22 @@
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
-export default function Sort({
-  sortObj,
-  setSortObj,
-  reverseSorting,
-  setReverseSorting,
-}) {
+import { setSort, setReverseSorting } from "../redux/slices/filterSlice";
+
+const filters = [
+  { name: "популярности", sortProperty: "rating" },
+  { name: "цене", sortProperty: "price" },
+  { name: "алфавиту", sortProperty: "title" },
+];
+
+export default function Sort() {
+  const dispatch = useDispatch();
+  const { sort, reverseSorting } = useSelector((state) => state.filter);
+
   const [open, setOpen] = useState(false);
 
-  const filters = [
-    { name: "популярности", sortProperty: "rating" },
-    { name: "цене", sortProperty: "price" },
-    { name: "алфавиту", sortProperty: "title" },
-  ];
-
   const onClickActiveFilter = (obj) => {
-    setSortObj(obj);
+    dispatch(setSort({ ...obj }));
     setOpen(false);
   };
 
@@ -24,7 +25,7 @@ export default function Sort({
       <div className="sort__label">
         <svg
           className={reverseSorting ? "" : "sort__label--icon-reverse"}
-          onClick={() => setReverseSorting(!reverseSorting)}
+          onClick={() => dispatch(setReverseSorting(!reverseSorting))}
           width="10"
           height="6"
           viewBox="0 0 10 6"
@@ -37,16 +38,17 @@ export default function Sort({
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setOpen(!open)}>{sortObj.name}</span>
+        <span onClick={() => setOpen(!open)}>{sort.name}</span>
       </div>
-      <div className="sort__popup">
-        {open && (
+
+      {open && (
+        <div className="sort__popup">
           <ul>
             {filters.map((obj) => {
               return (
                 <li
                   onClick={() => onClickActiveFilter(obj)}
-                  className={sortObj.name === obj.name ? "active" : ""}
+                  className={sort.name === obj.name ? "active" : ""}
                   key={obj.name}
                 >
                   {obj.name}
@@ -54,8 +56,8 @@ export default function Sort({
               );
             })}
           </ul>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
