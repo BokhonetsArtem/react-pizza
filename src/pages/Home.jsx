@@ -5,18 +5,26 @@ import Skeleton from "../components/PizzaBlock/Skeleton";
 import Pagination from "../components/Pagination";
 
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
+import qs from "qs";
 import { useSelector, useDispatch } from "react-redux";
 
-import { setCategoryId, setCurrentPage } from "../redux/slices/filterSlice";
+import {
+  setCategoryId,
+  setCurrentPage,
+  setFilters,
+} from "../redux/slices/filterSlice";
 
-import axios from "axios";
+import { sortList } from "../components/Sort";
 
 export default function Home({ searchValue }) {
   const { categoryId, currentPage, sort, reverseSorting } = useSelector(
     (state) => state.filter
   );
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
 
   const [pizzas, setPizzas] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -50,6 +58,28 @@ export default function Home({ searchValue }) {
   }, [categoryId, sort, reverseSorting, searchValue, currentPage]);
 
   useEffect(() => {
+    if (window.location.search) {
+      const params = qs.parse(window.location.search.substring(1));
+
+      const sort = sortList.find(
+        (obj) => obj.sortProperty === params.sortProperty
+      );
+
+      dispatch(setFilters({ ...params, sort }));
+    }
+  }, []);
+
+  useEffect(() => {
+    const queryString = qs.stringify({
+      sortProperty: sort.sortProperty,
+      categoryId,
+      currentPage,
+    });
+
+    navigate(`?${queryString}`);
+  }, [categoryId, sort, reverseSorting, searchValue, currentPage]);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
@@ -80,7 +110,7 @@ export default function Home({ searchValue }) {
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">{isLoading ? skeletons : cards}</div>
-      <Pagination currentPage={currentPage} onChangePage={onChangePage} />
+      <Pagination onChangePage={onChangePage} />
     </div>
   );
 }

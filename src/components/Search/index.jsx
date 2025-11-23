@@ -11,6 +11,7 @@ export default function Search() {
 
   const onClickClear = () => {
     setValue("");
+    setSearchValue("");
     inputRef.current.focus();
   };
 

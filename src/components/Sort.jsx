@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { setSort, setReverseSorting } from "../redux/slices/filterSlice";
 
-const filters = [
+export const sortList = [
   { name: "популярности", sortProperty: "rating" },
   { name: "цене", sortProperty: "price" },
   { name: "алфавиту", sortProperty: "title" },
@@ -44,7 +44,7 @@ export default function Sort() {
       {open && (
         <div className="sort__popup">
           <ul>
-            {filters.map((obj) => {
+            {sortList.map((obj) => {
               return (
                 <li
                   onClick={() => onClickActiveFilter(obj)}
