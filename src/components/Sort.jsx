@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
+
+import useClickOutside from "../hooks/useClickOutside";
 
 import { setSort, setReverseSorting } from "../redux/slices/filterSlice";
 
@@ -12,8 +14,14 @@ export const sortList = [
 export default function Sort() {
   const dispatch = useDispatch();
   const { sort, reverseSorting } = useSelector((state) => state.filter);
-
   const [open, setOpen] = useState(false);
+  const sortRef = useRef();
+
+  const popupClose = useCallback(() => {
+    setOpen(false);
+  });
+
+  useClickOutside(sortRef, popupClose);
 
   const onClickActiveFilter = (obj) => {
     dispatch(setSort({ ...obj }));
@@ -21,7 +29,7 @@ export default function Sort() {
   };
 
   return (
-    <div className="sort">
+    <div ref={sortRef} className="sort">
       <div className="sort__label">
         <svg
           className={reverseSorting ? "" : "sort__label--icon-reverse"}
