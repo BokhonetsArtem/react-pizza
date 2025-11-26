@@ -29,7 +29,7 @@ export default function PizzaBlock({
       price,
       imageUrl,
       type: typeNames[activeType],
-      size: activeSizeIndex,
+      size: sizes[activeSizeIndex],
     };
     dispatch(addItem(item));
   };

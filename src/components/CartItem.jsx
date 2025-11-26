@@ -1,4 +1,29 @@
-export default function CartItem({ id, title, type, price, count, imageUrl }) {
+import { useDispatch } from "react-redux";
+import { addItem, removeItem, minusItem } from "../redux/slices/cartSlice";
+
+export default function CartItem({
+  id,
+  title,
+  type,
+  price,
+  count,
+  imageUrl,
+  size,
+}) {
+  const dispatch = useDispatch();
+
+  const onClickPlus = () => {
+    dispatch(addItem({ id }));
+  };
+
+  const onClickMinus = () => {
+    dispatch(minusItem(id));
+  };
+
+  const onClickRemove = () => {
+    dispatch(removeItem(id));
+  };
+
   return (
     <div className="cart__item">
       <div className="cart__item-img">
@@ -6,10 +31,15 @@ export default function CartItem({ id, title, type, price, count, imageUrl }) {
       </div>
       <div className="cart__item-info">
         <h3>{title}</h3>
-        <p>{type} тесто, 26 см.</p>
+        <p>
+          {type} тесто, {size} см.
+        </p>
       </div>
       <div className="cart__item-count">
-        <div className="button button--outline button--circle cart__item-count-minus">
+        <div
+          onClick={onClickMinus}
+          className="button button--outline button--circle cart__item-count-minus"
+        >
           <svg
             width="10"
             height="10"
@@ -28,7 +58,10 @@ export default function CartItem({ id, title, type, price, count, imageUrl }) {
           </svg>
         </div>
         <b>{count}</b>
-        <div className="button button--outline button--circle cart__item-count-plus">
+        <div
+          onClick={onClickPlus}
+          className="button button--outline button--circle cart__item-count-plus"
+        >
           <svg
             width="10"
             height="10"
@@ -51,7 +84,10 @@ export default function CartItem({ id, title, type, price, count, imageUrl }) {
         <b>{price * count} ₽</b>
       </div>
       <div className="cart__item-remove">
-        <div className="button button--outline button--circle">
+        <div
+          onClick={onClickRemove}
+          className="button button--outline button--circle"
+        >
           <svg
             width="10"
             height="10"
