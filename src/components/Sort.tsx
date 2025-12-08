@@ -5,7 +5,12 @@ import useClickOutside from "../hooks/useClickOutside";
 
 import { setSort, setReverseSorting } from "../redux/slices/filterSlice";
 
-export const sortList = [
+type SortItem = {
+  name: string;
+  sortProperty: string;
+};
+
+export const sortList: SortItem[] = [
   { name: "популярности", sortProperty: "rating" },
   { name: "цене", sortProperty: "price" },
   { name: "алфавиту", sortProperty: "title" },
@@ -15,7 +20,7 @@ export default function Sort() {
   const dispatch = useDispatch();
   const { sort, reverseSorting } = useSelector((state) => state.filter);
   const [open, setOpen] = useState(false);
-  const sortRef = useRef();
+  const sortRef = useRef<HTMLDivElement>(null);
 
   const popupClose = useCallback(() => {
     setOpen(false);
@@ -23,7 +28,7 @@ export default function Sort() {
 
   useClickOutside(sortRef, popupClose);
 
-  const onClickActiveFilter = (obj) => {
+  const onClickActiveFilter = (obj: SortItem) => {
     dispatch(setSort({ ...obj }));
     setOpen(false);
   };

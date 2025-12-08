@@ -1,18 +1,27 @@
-import { useState } from "react";
+import { FC, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import { addItem } from "../../redux/slices/cartSlice";
 
 const typeNames = ["тонкое", "традиционное"];
 
-export default function PizzaBlock({
+type PizzaBlockProps = {
+  id: string;
+  title: string;
+  price: number;
+  imageUrl: string;
+  sizes: number[];
+  types: number[];
+};
+
+const PizzaBlock: FC<PizzaBlockProps> = ({
   id,
   title,
   price,
   imageUrl,
   sizes,
   types,
-}) {
+}) => {
   const dispatch = useDispatch();
   const cartItem = useSelector((state) =>
     state.cart.items.find((item) => item.id === id)
@@ -92,4 +101,6 @@ export default function PizzaBlock({
       </div>
     </div>
   );
-}
+};
+
+export default PizzaBlock;

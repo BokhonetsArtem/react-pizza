@@ -20,22 +20,18 @@ import { fetchPizzas } from "../redux/slices/pizzasSlice";
 
 import { sortList } from "../components/Sort";
 
-export default function Home({ searchValue }) {
-  const { categoryId, currentPage, sort, reverseSorting } = useSelector(
-    (state) => state.filter
-  );
+const Home = () => {
+  const { categoryId, currentPage, sort, reverseSorting, searchValue } =
+    useSelector((state) => state.filter);
   const { items, status } = useSelector((state) => state.pizza);
 
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
-
   const { pathname } = useLocation();
-
   const search = searchValue ? `&search=${searchValue}` : "";
-
   const getPizzas = async () => {
     dispatch(
+      // @ts-ignore
       fetchPizzas({ search, categoryId, reverseSorting, sort, currentPage })
     );
   };
@@ -71,10 +67,10 @@ export default function Home({ searchValue }) {
   }, [pathname]);
 
   const cards = items
-    .filter((pizza) =>
+    .filter((pizza: any) =>
       pizza.name.toLowerCase().includes(searchValue.toLowerCase())
     )
-    .map((pizza) => {
+    .map((pizza: any) => {
       return <PizzaBlock key={pizza.id} title={pizza.name} {...pizza} />;
     });
 
@@ -82,7 +78,7 @@ export default function Home({ searchValue }) {
     <Skeleton key={index} />
   ));
 
-  const onChangePage = (number) => {
+  const onChangePage = (number: number) => {
     dispatch(setCurrentPage(number));
   };
 
@@ -91,7 +87,7 @@ export default function Home({ searchValue }) {
       <div className="content__top">
         <Categories
           categoryId={categoryId}
-          onChangeCategory={(id) => dispatch(setCategoryId(id))}
+          onChangeCategory={(id: number) => dispatch(setCategoryId(id))}
         />
         <Sort />
       </div>
@@ -113,4 +109,6 @@ export default function Home({ searchValue }) {
       <Pagination onChangePage={onChangePage} />
     </div>
   );
-}
+};
+
+export default Home;

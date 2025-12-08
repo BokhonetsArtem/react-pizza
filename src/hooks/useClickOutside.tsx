@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 export default function useClickOutside(ref, callback) {
   useEffect(() => {
-    function onOutsideClick(event) {
+    function onOutsideClick(event: any) {
       if (ref.current && !ref.current.contains(event.target)) {
         callback();
       }
