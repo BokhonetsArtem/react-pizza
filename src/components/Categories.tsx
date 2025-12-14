@@ -11,7 +11,7 @@ const categories = [
 
 type CategoriesProps = {
   categoryId: number;
-  onChangeCategory: any;
+  onChangeCategory: (index: number) => void;
 };
 
 const Categories: FC<CategoriesProps> = ({ categoryId, onChangeCategory }) => {
