@@ -1,14 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-type Sort = {
+export type Sort = {
   name: string;
   sortProperty: "rating" | "price" | "title";
 };
 
-interface filterSliceState {
-  searchValue: string;
-  categoryId: number;
+export interface filterSliceState {
   currentPage: number;
+  categoryId: number;
+  searchValue: string;
   sort: Sort;
   reverseSorting?: boolean;
 }

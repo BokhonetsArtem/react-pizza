@@ -1,16 +1,26 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { Sort } from "./filterSlice";
+
+export type SearchPizzaParams = {
+  currentPage: number;
+  categoryId: number;
+  searchValue: string;
+  sort: Sort;
+  reverseSorting?: boolean;
+};
 
 export const fetchPizzas = createAsyncThunk(
   "pizza/fetchPizzasStatus",
-  async (params: Record<string, string>) => {
-    const { currentPage, categoryId, sort, reverseSorting, search } = params;
+  async (params: SearchPizzaParams) => {
+    const { currentPage, categoryId, sort, reverseSorting, searchValue } =
+      params;
     const res = await axios.get<Pizza[]>(
       `https://69185af821a96359486fc82f.mockapi.io/pizzas?page=${currentPage}&limit=4&${
         Number(categoryId) > 0 ? `category=${categoryId}` : ""
       }&sortBy=${sort.sortProperty}&order=${
         reverseSorting ? "asc" : "desc"
-      }${search}`
+      }${searchValue}`
     );
     return res.data as Pizza[];
   }

@@ -1,8 +1,8 @@
 import { useState, useRef, useCallback } from "react";
-import { useSelector, useDispatch } from "react-redux";
 
 import useClickOutside from "../hooks/useClickOutside";
 
+import { useAppDispatch, useAppSelector } from "../redux/store";
 import { setSort, setReverseSorting } from "../redux/slices/filterSlice";
 
 type SortItem = {
@@ -16,9 +16,11 @@ export const sortList: SortItem[] = [
   { name: "алфавиту", sortProperty: "title" },
 ];
 
+// В ФАЙЛЕ СТОР ПОДГОТОВЛЕННЫЕ ТИПИЗИРОВАННЫЕ USESELECTOR USEDISPATCH, ИХ НАДО ЗАМЕНИТЬ В КАЖДОМ ФАЙЛЕ
+
 export default function Sort() {
-  const dispatch = useDispatch();
-  const { sort, reverseSorting } = useSelector((state) => state.filter);
+  const dispatch = useAppDispatch();
+  const { sort, reverseSorting } = useAppSelector((state) => state.filter);
   const [open, setOpen] = useState(false);
   const sortRef = useRef<HTMLDivElement>(null);
 

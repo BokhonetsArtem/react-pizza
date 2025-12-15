@@ -8,7 +8,6 @@ import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import qs from "qs";
-import { useSelector, useDispatch } from "react-redux";
 
 import {
   setCategoryId,
@@ -18,21 +17,26 @@ import {
 
 import { fetchPizzas } from "../redux/slices/pizzasSlice";
 
-import { sortList } from "../components/Sort";
+import { useAppDispatch, useAppSelector } from "../redux/store";
+import { SearchPizzaParams } from "../redux/slices/pizzasSlice";
 
 const Home = () => {
   const { categoryId, currentPage, sort, reverseSorting, searchValue } =
-    useSelector((state) => state.filter);
-  const { items, status } = useSelector((state) => state.pizza);
+    useAppSelector((state) => state.filter);
+  const { items, status } = useAppSelector((state) => state.pizza);
+  const dispatch = useAppDispatch();
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const search = searchValue ? `&search=${searchValue}` : "";
   const getPizzas = async () => {
     dispatch(
-      // @ts-ignore
-      fetchPizzas({ search, categoryId, reverseSorting, sort, currentPage })
+      fetchPizzas({
+        searchValue: searchValue ? `&search=${searchValue}` : "",
+        categoryId,
+        reverseSorting,
+        sort,
+        currentPage,
+      })
     );
   };
 
@@ -42,13 +46,15 @@ const Home = () => {
 
   useEffect(() => {
     if (window.location.search) {
-      const params = qs.parse(window.location.search.substring(1));
+      const params = qs.parse(
+        window.location.search.substring(1)
+      ) as unknown as SearchPizzaParams;
 
-      const sort = sortList.find(
-        (obj) => obj.sortProperty === params.sortProperty
-      );
+      // const sort = sortList.find(
+      //   (obj) => obj.sortProperty === params.sortProperty
+      // );
 
-      dispatch(setFilters({ ...params, sort }));
+      dispatch(setFilters(params));
     }
   }, []);
 
