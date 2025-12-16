@@ -1,15 +1,26 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Search from "./Search";
 import { useAppSelector } from "../redux/store";
 import logoSvg from "../assets/img/pizza-logo.svg";
+import { useEffect, useRef } from "react";
 
-export default function Header() {
+const Header = () => {
   const { items, totalPrice } = useAppSelector((state) => state.cart);
+  const location = useLocation();
+  const isMounted = useRef(false);
 
   const totalCount = items.reduce(
     (acc: number, item: any) => acc + item.count,
     0
   );
+
+  useEffect(() => {
+    if (isMounted.current) {
+      const json = JSON.stringify(items);
+      localStorage.setItem("cart", json);
+    }
+    isMounted.current = true;
+  }, [items, totalPrice]);
 
   return (
     <div className="header">
@@ -23,7 +34,7 @@ export default function Header() {
             </div>
           </div>
         </Link>
-        <Search />
+        {location.pathname !== "/cart" && <Search />}
 
         <div className="header__cart">
           <Link to="/cart" className="button button--cart">
@@ -64,4 +75,6 @@ export default function Header() {
       </div>
     </div>
   );
-}
+};
+
+export default Header;

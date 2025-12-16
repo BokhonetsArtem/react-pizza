@@ -4,7 +4,7 @@ import PizzaBlock from "../components/PizzaBlock";
 import Skeleton from "../components/PizzaBlock/Skeleton";
 import Pagination from "../components/Pagination";
 
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import qs from "qs";
@@ -84,9 +84,9 @@ const Home = () => {
     <Skeleton key={index} />
   ));
 
-  const onChangePage = (number: number) => {
+  const onChangePage = useCallback((number: number) => {
     dispatch(setCurrentPage(number));
-  };
+  }, []);
 
   return (
     <div className="container">
@@ -95,7 +95,7 @@ const Home = () => {
           categoryId={categoryId}
           onChangeCategory={(id: number) => dispatch(setCategoryId(id))}
         />
-        <Sort />
+        <Sort sort={sort} reverseSorting={reverseSorting} />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       {status === "error" ? (

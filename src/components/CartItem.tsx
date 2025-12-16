@@ -1,6 +1,7 @@
 import { useAppDispatch } from "../redux/store";
 import { addItem, removeItem, minusItem } from "../redux/slices/cartSlice";
 import { FC } from "react";
+import { CartItem as TCartItem } from "../redux/slices/cartSlice";
 
 type CartItemProps = {
   id: string;
@@ -24,7 +25,7 @@ const CartItem: FC<CartItemProps> = ({
   const dispatch = useAppDispatch();
 
   const onClickPlus = () => {
-    dispatch(addItem({ id }));
+    dispatch(addItem({ id } as TCartItem));
   };
 
   const onClickMinus = () => {
@@ -47,7 +48,8 @@ const CartItem: FC<CartItemProps> = ({
         </p>
       </div>
       <div className="cart__item-count">
-        <div
+        <button
+          disabled={count === 1}
           onClick={onClickMinus}
           className="button button--outline button--circle cart__item-count-minus"
         >
@@ -67,9 +69,9 @@ const CartItem: FC<CartItemProps> = ({
               fill="#EB5A1E"
             ></path>
           </svg>
-        </div>
+        </button>
         <b>{count}</b>
-        <div
+        <button
           onClick={onClickPlus}
           className="button button--outline button--circle cart__item-count-plus"
         >
@@ -89,7 +91,7 @@ const CartItem: FC<CartItemProps> = ({
               fill="#EB5A1E"
             ></path>
           </svg>
-        </div>
+        </button>
       </div>
       <div className="cart__item-price">
         <b>{price * count} ₽</b>

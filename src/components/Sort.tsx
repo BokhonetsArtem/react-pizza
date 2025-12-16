@@ -1,36 +1,34 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, memo, FC } from "react";
 
 import useClickOutside from "../hooks/useClickOutside";
 
-import { useAppDispatch, useAppSelector } from "../redux/store";
+import { useAppDispatch } from "../redux/store";
 import { setSort, setReverseSorting } from "../redux/slices/filterSlice";
+import { Sort as ISort } from "../redux/slices/filterSlice";
 
-type SortItem = {
-  name: string;
-  sortProperty: string;
-};
-
-export const sortList: SortItem[] = [
+export const sortList: ISort[] = [
   { name: "популярности", sortProperty: "rating" },
   { name: "цене", sortProperty: "price" },
   { name: "алфавиту", sortProperty: "title" },
 ];
 
-// В ФАЙЛЕ СТОР ПОДГОТОВЛЕННЫЕ ТИПИЗИРОВАННЫЕ USESELECTOR USEDISPATCH, ИХ НАДО ЗАМЕНИТЬ В КАЖДОМ ФАЙЛЕ
+type SortProps = {
+  sort: ISort;
+  reverseSorting: boolean | undefined;
+};
 
-export default function Sort() {
+const Sort: FC<SortProps> = memo(({ sort, reverseSorting }) => {
   const dispatch = useAppDispatch();
-  const { sort, reverseSorting } = useAppSelector((state) => state.filter);
   const [open, setOpen] = useState(false);
   const sortRef = useRef<HTMLDivElement>(null);
 
   const popupClose = useCallback(() => {
     setOpen(false);
-  });
+  }, []);
 
   useClickOutside(sortRef, popupClose);
 
-  const onClickActiveFilter = (obj: SortItem) => {
+  const onClickActiveFilter = (obj: ISort) => {
     dispatch(setSort({ ...obj }));
     setOpen(false);
   };
@@ -75,4 +73,6 @@ export default function Sort() {
       )}
     </div>
   );
-}
+});
+
+export default Sort;
