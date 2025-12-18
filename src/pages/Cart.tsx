@@ -16,7 +16,7 @@ const Cart: FC = () => {
   );
 
   const onClickClear = () => {
-    dispatch(clearItems(items));
+    dispatch(clearItems());
   };
 
   if (!totalPrice) {
